@@ -22,12 +22,16 @@ public class PizzaService {
         return this.pizzaRepository.findAll();
     }
 
-    public PizzaEntity getPizza(Integer id){
-        return this.pizzaRepository.findById(id).orElse(null);
+    public PizzaEntity getPizza(Integer idPizza){
+        return this.pizzaRepository.findById(idPizza).orElse(null);
     }
 
     public PizzaEntity save(PizzaEntity pizza){
         return this.pizzaRepository.save(pizza);
+    }
+
+    public void delete(Integer idPizza){
+        this.pizzaRepository.deleteById(idPizza);
     }
 
     public Boolean exists(Integer idPizza){

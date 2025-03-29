@@ -1,5 +1,6 @@
 package com.pizzeria_tomato.tomato.persistence.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,10 +35,12 @@ public class OrderEntity {
     @Column(name = "additional_notes")
     private String additionalNotes;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY) // Indica que no cargara la informacion hasta que se use
     @JoinColumn(name = "id_customer", referencedColumnName = "id_customer", insertable = false, updatable = false)
+    @JsonIgnore
     private CustomerEntity customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER) // EAGER: Siempre que llamemos a un OrderEntity, se llamara
+    // esta relacion, es decir, se cargaran los datos en esta lista
     private List<OrderItemEntity> items;
 }

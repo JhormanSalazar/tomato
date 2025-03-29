@@ -14,33 +14,45 @@ public class PizzaController {
     private final PizzaService pizzaService;
 
     @Autowired
-    public PizzaController(PizzaService pizzaService){
+    public PizzaController(PizzaService pizzaService) {
         this.pizzaService = pizzaService;
     }
 
     @GetMapping
-    public ResponseEntity<List<PizzaEntity>> getAll(){
+    public ResponseEntity<List<PizzaEntity>> getAll() {
         return ResponseEntity.ok(this.pizzaService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PizzaEntity> getPizza(@PathVariable Integer id){
-        return ResponseEntity.ok(this.pizzaService.getPizza(id));
+    public ResponseEntity<PizzaEntity> getPizza(@PathVariable Integer id) {
+        if (this.pizzaService.exists(id)){
+            return ResponseEntity.ok(this.pizzaService.getPizza(id));
+        }
+        return  ResponseEntity.badRequest().build();
     }
 
 
     @PostMapping()
-    public ResponseEntity<PizzaEntity> add(@RequestBody PizzaEntity pizza){
-        if(pizza.getIdPizza() == null || !this.pizzaService.exists(pizza.getIdPizza())) {
+    public ResponseEntity<PizzaEntity> add(@RequestBody PizzaEntity pizza) {
+        if (pizza.getIdPizza() == null || !this.pizzaService.exists(pizza.getIdPizza())) {
             return ResponseEntity.ok(this.pizzaService.save(pizza));
         }
         return ResponseEntity.badRequest().build();
     }
 
     @PutMapping()
-    public ResponseEntity<PizzaEntity> update(@RequestBody PizzaEntity pizza){
-        if(pizza.getIdPizza() != null || this.pizzaService.exists(pizza.getIdPizza())) {
+    public ResponseEntity<PizzaEntity> update(@RequestBody PizzaEntity pizza) {
+        if (pizza.getIdPizza() != null || this.pizzaService.exists(pizza.getIdPizza())) {
             return ResponseEntity.ok(this.pizzaService.save(pizza));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @DeleteMapping("/{idPizza}")
+    public ResponseEntity<Void> delete(@PathVariable Integer idPizza) {
+        if (this.pizzaService.exists(idPizza)) {
+            this.pizzaService.delete(idPizza);
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
     }
